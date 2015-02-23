@@ -40,7 +40,13 @@ class StringValidator extends AbstractValidator {
 	 * @return bool
 	 */
 	protected function validateUrl($value) {
-		if (filter_var($value, FILTER_VALIDATE_URL) !== FALSE) {
+		if ( $parts = parse_url($value) ) {
+			if ( !isset($parts["scheme"]) )
+			{
+				$value = "http://$value";
+			}
+		}
+		if (filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED) !== FALSE) {
 			return TRUE;
 		};
 		return FALSE;
